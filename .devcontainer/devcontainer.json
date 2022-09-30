@@ -1,0 +1,30 @@
+{
+  "name": "TensorFlow Haskell",
+
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+
+  "settings": {
+    "haskell.ghcupExecutablePath": "~/.ghcup/bin/ghcup",
+    "haskell.manageHLS": "GHCup",
+    "haskell.toolchain": {
+      "hls": "1.7.0.0",
+      // hls v1.8.0.0 requires GLIBC 2.32, which is not shipped by Ubuntu 18.04
+      // tracked issue: https://github.com/haskell/haskell-language-server/issues/3160
+      "ghc": "8.10.6"
+      // 8.10.6 is also used by Stack for this template
+    }
+  },
+
+  "extensions": [
+    "haskell.haskell"
+  ],
+
+  "remoteUser": "vscode",
+
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
+    "source=tensorflow-haskell-cache,target=/home/vscode/.stack,type=volume"
+  ]
+}
