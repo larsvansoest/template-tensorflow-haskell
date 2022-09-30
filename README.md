@@ -1,7 +1,7 @@
-# Template for Tensorflow Projects in Haskell
-This template contains the basis for a [TensorFlow](https://www.tensorflow.org/) project in [Haskell](https://www.haskell.org/).
+# Template for Tensorflow Projects in Haskell (GPU)
+This template contains the basis for a [TensorFlow](https://www.tensorflow.org/) project in [Haskell](https://www.haskell.org/), which runs on a Nvidia GPU.
 
-> This template will use the CPU to run TensorFlow. For GPU, please use this repository's [gpu branch](https://github.com/larsvansoest/template-tensorflow-haskell/tree/gpu).
+> *Note*: as [tensorflow/haskell](https://github.com/tensorflow/haskell) only supports [TensorFlow v2.3.0](https://github.com/tensorflow/tensorflow/releases/tag/v2.3.0), Nvidia's Ampere architectures (3000 series) are not supported (See https://github.com/tensorflow/haskell/issues/280). Running on this gpu template on a 3000 series will raise `TensorFlowException TF_INTERNAL "CUDA runtime implicit initialization on GPU:0 failed. Status: device kernel image is invalid"`.
 
 ## Features
 The [Ubuntu 18.04](https://releases.ubuntu.com/18.04/) development container is built from the [tensorflow/haskell Dockerfile](https://github.com/tensorflow/haskell/blob/master/docker/Dockerfile) with the following additions:
@@ -75,8 +75,6 @@ Setup WSL2 with Ubuntu as follows:
         format = ssh
     [tag]
         gpgsign = true
-    [core]
-	    editor = code
     ```
 
 ## Resources

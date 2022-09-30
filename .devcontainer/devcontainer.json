@@ -1,10 +1,15 @@
 {
-  "name": "TensorFlow Haskell",
+  "name": "TensorFlow Haskell (GPU)",
 
   "build": {
     "dockerfile": "Dockerfile"
   },
 
+  "runArgs": [
+    "--gpus",
+    "all"
+  ],
+  
   "settings": {
     "haskell.ghcupExecutablePath": "~/.ghcup/bin/ghcup",
     "haskell.manageHLS": "GHCup",
@@ -25,6 +30,6 @@
 
   "mounts": [
     "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
-    "source=tensorflow-haskell-cache,target=/home/vscode/.stack,type=volume"
+    "source=tensorflow-haskell-gpu-cache,target=/home/vscode/.stack,type=volume"
   ]
 }

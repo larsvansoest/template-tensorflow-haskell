@@ -1,11 +1,15 @@
-# Tensorflow Haskell (2.3.0)
+# Tensorflow Haskell (2.3.0-gpu)
 # See https://github.com/tensorflow/haskell/blob/c66c912c327810796b6282ae77c33e336c1dadea/docker/gpu/Dockerfile
-FROM tensorflow/tensorflow:2.3.0 as tensorflow-haskell-2.3.0
+FROM tensorflow/tensorflow:2.3.0-gpu as tensorflow-haskell-2.3.0-gpu
 LABEL maintainer="TensorFlow authors <tensorflow-haskell@googlegroups.com>"
 
-RUN apt-get update
+# cuda is installed, and ppa is no longer signed, so remove the ppa
+RUN rm /etc/apt/sources.list.d/cuda.list \
+    && apt-get update
 
 RUN apt-get install -y \
+        # stack needs git
+        git \
         # Required by snappy-frames dependency.
         libsnappy-dev \
         # Avoids /usr/bin/ld: cannot find -ltinfo
@@ -17,11 +21,9 @@ RUN apt-get install -y \
         curl \
         unzip \
         # Required for locales configuration.
-        locales \
-        # Required for tcp connections by stack (See: https://github.com/tensorflow/haskell/issues/182)
-        netbase
+        locales
 
-# Our MNIST demo program outputs Unicode characters.
+# Support output of Unicode characters.
 RUN dpkg-reconfigure locales && \
     locale-gen en_US.UTF-8 && \
     update-locale LANG=en_US.UTF-8
@@ -31,14 +33,14 @@ RUN \
     curl -O -L https://github.com/google/protobuf/releases/download/v3.13.0/protoc-3.13.0-linux-x86_64.zip && \
     unzip -d /usr/local protoc-3.13.0-linux-x86_64.zip bin/protoc && \
     chmod 755 /usr/local/bin/protoc && \
-    curl -O https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.3.0.tar.gz && \
-    tar zxf libtensorflow-cpu-linux-x86_64-2.3.0.tar.gz -C /usr/local && \
+    curl -O https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-2.3.0.tar.gz && \
+    tar zxf libtensorflow-gpu-linux-x86_64-2.3.0.tar.gz -C /usr/local && \
     ldconfig
 
 ENV LANG en_US.UTF-8
 
 # devcontainer
-FROM tensorflow-haskell-2.3.0
+FROM tensorflow-haskell-2.3.0-gpu
 
 # Install git and enable ssh signing on Ubuntu 18.04.
 ARG SSH_VERSION=9.0
@@ -82,7 +84,7 @@ RUN export BOOTSTRAP_HASKELL_INSTALL_STACK=True \
 # add ghcup, cabal and stack to path
 ENV PATH="/home/${USERNAME}/.ghcup/bin:${PATH}"
 
-# install Haskell Language Server 1.7.0.0 for GHC 8.10.6
+# install Haskell Language Server
 RUN ghcup compile hls -v ${HLS_VERSION} --ghc ${GHC_VERSION}
 
 # set c enconding to utf-8 to support ghc output
